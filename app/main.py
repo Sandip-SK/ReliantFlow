@@ -2,6 +2,12 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+@app.route("/admin")
+def admin():
+    return jsonify({
+        "message": "admin endpoint"
+    })
+
 
 @app.route("/")
 def home():
@@ -9,6 +15,22 @@ def home():
         "service": "ReliantFlow",
         "status": "healthy"
     })
+
+
+@app.route("/calculate")
+def calculate():
+    value = 10
+
+    if value > 100:
+        return jsonify({"result": "high"})
+
+    if value < 0:
+        return jsonify({"result": "negative"})
+
+    if value == 10:
+        return jsonify({"result": "exact"})
+
+    return jsonify({"result": "normal"})
 
 
 @app.route("/health")
