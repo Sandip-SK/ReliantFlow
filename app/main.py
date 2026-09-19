@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ def home():
 
 @app.route("/calculate")
 def calculate():
-    value = 10
+    value = int(request.args.get("value", 10))
 
     if value > 100:
         return jsonify({"result": "high"})
