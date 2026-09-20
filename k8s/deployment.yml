@@ -27,7 +27,7 @@ spec:
       containers:
         - name: reliantflow
 
-          image: ghcr.io/sandip-sk/reliantflow:dacce446879a56b4db917d5324268c3c7c2b99df
+          image: ghcr.io/sandip-sk/reliantflow:33097da57638e88e7bc841203d8264e33eb359b1
 
           ports:
             - containerPort: 8080
