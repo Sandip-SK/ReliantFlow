@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reliantflow
+  labels:
+    app: reliantflow
+
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: reliantflow
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+  template:
+    metadata:
+      labels:
+        app: reliantflow
+
+    spec:
+      containers:
+        - name: reliantflow
+
+          image: ghcr.io/sandip-sk/reliantflow:dacce446879a56b4db917d5324268c3c7c2b99df
+
+          ports:
+            - containerPort: 8080
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 20
+
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
