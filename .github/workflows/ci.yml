@@ -8,6 +8,9 @@ on:
   push:
     branches:
       - main
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   lint:
@@ -93,21 +96,46 @@ jobs:
       - name: Run dependency scan
         run: |
           python -m pip_audit
-  container-scan:
+          
+  build-scan-publish:
     runs-on: ubuntu-latest
+
+    needs:
+      - lint
+      - test
+      - security
+      - dependency-scan
+
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Docker image
         run: |
-          docker build -t reliantflow:${{ github.sha }} .
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/reliantflow:${{ github.sha }} .
 
       - name: Scan Docker image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: reliantflow:${{ github.sha }}
+          image-ref: ghcr.io/${{ github.repository_owner }}/reliantflow:${{ github.sha }}
           format: table
-          exit-code: "1"
+          exit-code: '1'
           ignore-unfixed: true
           severity: CRITICAL,HIGH
+
+      - name: Push Docker image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/reliantflow:${{ github.sha }}
