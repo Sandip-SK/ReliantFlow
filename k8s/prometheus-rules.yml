@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: reliantflow-slo
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: reliantflow-slo
+      rules:
+
+        - record: reliantflow:http_requests:rate5m
+          expr: |
+            sum(rate(flask_http_request_total[5m]))
+
+        - record: reliantflow:http_errors:rate5m
+          expr: |
+            sum(rate(flask_http_request_total{status=~"5.."}[5m])) or vector(0)
+
+        - record: reliantflow:availability:ratio5m
+          expr: |
+            1 -
+            (
+              (sum(rate(flask_http_request_total{status=~"5.."}[5m])) or vector(0))
+              /
+              sum(rate(flask_http_request_total[5m]))
+            )

@@ -27,7 +27,7 @@ spec:
       containers:
         - name: reliantflow
 
-          image: ghcr.io/sandip-sk/reliantflow:33097da57638e88e7bc841203d8264e33eb359b1
+          image: ghcr.io/sandip-sk/reliantflow:d00ef1455afe3bf9f0fe7544e4c639e9e691f211
           env:
             - name: APP_VERSION
               valueFrom:
