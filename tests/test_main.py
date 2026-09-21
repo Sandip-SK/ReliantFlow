@@ -80,3 +80,9 @@ def test_invalid_endpoint():
     response = client.get("/does-not-exist")
 
     assert response.status_code == 404
+
+def test_failure():
+    client = app.test_client()
+    response = client.get("/failure")
+    assert response.status_code == 500
+    assert response.json["error"] == "simulated failure"
