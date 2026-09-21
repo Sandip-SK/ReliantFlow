@@ -1,6 +1,10 @@
+import os
+
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
+
+APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
 
 @app.route("/admin")
 def admin():
@@ -13,7 +17,8 @@ def admin():
 def home():
     return jsonify({
         "service": "ReliantFlow",
-        "status": "healthy"
+        "status": "healthy",
+        "version": APP_VERSION
     })
 
 
@@ -43,7 +48,7 @@ def health():
 @app.route("/version")
 def version():
     return jsonify({
-        "version": "1.0.0"
+        "version": APP_VERSION
     })
 
 

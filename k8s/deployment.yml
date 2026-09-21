@@ -28,7 +28,12 @@ spec:
         - name: reliantflow
 
           image: ghcr.io/sandip-sk/reliantflow:33097da57638e88e7bc841203d8264e33eb359b1
-
+          env:
+            - name: APP_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: reliantflow-config
+                  key: APP_VERSION
           ports:
             - containerPort: 8080
 
