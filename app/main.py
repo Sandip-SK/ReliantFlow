@@ -1,8 +1,10 @@
 import os
 
 from flask import Flask, jsonify, request
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
 
 APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
 
