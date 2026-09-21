@@ -53,6 +53,10 @@ def version():
         "version": APP_VERSION
     })
 
+@app.route("/failure")
+def failure():
+    return jsonify({"error": "simulated failure"}), 500
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)  # nosec B104
