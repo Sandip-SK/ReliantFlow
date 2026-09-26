@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 from flask import Flask, jsonify, request
 from prometheus_flask_exporter import PrometheusMetrics
@@ -74,4 +74,3 @@ def failure():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)  # nosec B104
-    
