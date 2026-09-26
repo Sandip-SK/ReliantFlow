@@ -1,4 +1,5 @@
 import os
+import logging
 
 from flask import Flask, jsonify, request
 from prometheus_flask_exporter import PrometheusMetrics
@@ -8,8 +9,16 @@ metrics = PrometheusMetrics(app)
 
 APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+
 @app.route("/admin")
 def admin():
+    logger.info("Admin endpoint accessed")
     return jsonify({
         "message": "admin endpoint"
     })
@@ -28,6 +37,8 @@ def home():
 def calculate():
     value = int(request.args.get("value", 10))
 
+    logger.info("Calculate request received with value=%s", value)
+
     if value > 100:
         return jsonify({"result": "high"})
 
@@ -42,6 +53,7 @@ def calculate():
 
 @app.route("/health")
 def health():
+    logger.info("Health check endpoint accessed")
     return jsonify({
         "status": "healthy"
     })
@@ -49,14 +61,17 @@ def health():
 
 @app.route("/version")
 def version():
+    logger.info("Version endpoint accessed")
     return jsonify({
         "version": APP_VERSION
     })
 
 @app.route("/failure")
 def failure():
+    logger.error("Simulated application failure")
     return jsonify({"error": "simulated failure"}), 500
 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)  # nosec B104
+    
