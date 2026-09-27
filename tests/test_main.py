@@ -1,5 +1,6 @@
 from app.main import app
 
+
 def test_ready():
     client = app.test_client()
 
