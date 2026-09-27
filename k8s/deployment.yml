@@ -47,7 +47,7 @@ spec:
 
           readinessProbe:
             httpGet:
-              path: /health
+              path: /ready
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
@@ -58,6 +58,13 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 20
+
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 30
+            periodSeconds: 5
 
           securityContext:
             runAsNonRoot: true

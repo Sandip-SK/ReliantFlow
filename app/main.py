@@ -54,8 +54,11 @@ def calculate():
 @app.route("/health")
 def health():
     logger.info("Health check endpoint accessed")
-    return jsonify({"status": "unhealthy"}), 500
+    return jsonify({"status": "healthy"})
 
+@app.route("/ready")
+def ready():
+    return jsonify({"status": "ready"})
 
 @app.route("/version")
 def version():
