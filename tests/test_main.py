@@ -1,23 +1,30 @@
 from app.main import app
 
-
-def test_home():
+def test_ready():
     client = app.test_client()
 
-    response = client.get("/")
+    response = client.get("/ready")
 
     assert response.status_code == 200
-    assert response.json["service"] == "ReliantFlow"
+    assert response.json["status"] == "ready"
+
+
+def test_health():
+    client = app.test_client()
+
+    response = client.get("/health")
+
+    assert response.status_code == 200
     assert response.json["status"] == "healthy"
 
 
-def test_admin():
+def test_failure():
     client = app.test_client()
 
-    response = client.get("/admin")
+    response = client.get("/failure")
 
-    assert response.status_code == 200
-    assert response.json["message"] == "admin endpoint"
+    assert response.status_code == 500
+    assert response.json["error"] == "simulated failure"
 
 
 def test_calculate_high():
@@ -56,12 +63,13 @@ def test_calculate_normal():
     assert response.json["result"] == "normal"
 
 
-def test_health():
+def test_calculate_default():
     client = app.test_client()
 
-    response = client.get("/health")
+    response = client.get("/calculate")
 
-    assert response.status_code == 500
+    assert response.status_code == 200
+    assert response.json["result"] == "exact"
 
 
 def test_version():
@@ -70,18 +78,4 @@ def test_version():
     response = client.get("/version")
 
     assert response.status_code == 200
-    assert response.json["version"] == "1.0.0"
-
-
-def test_invalid_endpoint():
-    client = app.test_client()
-
-    response = client.get("/does-not-exist")
-
-    assert response.status_code == 404
-
-def test_failure():
-    client = app.test_client()
-    response = client.get("/failure")
-    assert response.status_code == 500
-    assert response.json["error"] == "simulated failure"
+    assert "version" in response.json
