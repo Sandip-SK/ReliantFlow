@@ -9,15 +9,12 @@ spec:
   groups:
     - name: reliantflow-slo
       rules:
-
         - record: reliantflow:http_requests:rate5m
           expr: |
             sum(rate(flask_http_request_total[5m]))
-
         - record: reliantflow:http_errors:rate5m
           expr: |
             sum(rate(flask_http_request_total{status=~"5.."}[5m])) or vector(0)
-
         - record: reliantflow:availability:ratio5m
           expr: |
             1 -
@@ -26,3 +23,13 @@ spec:
               /
               sum(rate(flask_http_request_total[5m]))
             )
+        - alert: ReliantFlowHighErrorRate
+          expr: |
+            (1 - reliantflow:availability:ratio5m) > 0.001
+          for: 2m
+          labels:
+            severity: warning
+            service: reliantflow
+          annotations:
+            summary: "ReliantFlow availability SLO is being violated"
+            description: "ReliantFlow 5xx error rate has exceeded the 0.1% SLO threshold for more than 2 minutes."
